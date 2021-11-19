@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Renting.Application.Parqueadero;
+using Renting.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -45,9 +46,9 @@ namespace Renting.Worker
                         using (var scope = _services.CreateScope())
                         {
                             var _mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                            var ingresarVehiculoRequest = System.Text.Json.JsonSerializer.Deserialize<IngresoVehiculoCommand>(System.Text.Encoding.Default.GetString(args.Message.Body.ToArray()));
-                            _ = await _mediator.Send(new IngresoVehiculoFromMessage(ingresarVehiculoRequest.Placa,
-                                ingresarVehiculoRequest.Tipo, ingresarVehiculoRequest.Cilindraje));
+                            var facturaVehiculoRequest = System.Text.Json.JsonSerializer.Deserialize<Vehiculo>(System.Text.Encoding.Default.GetString(args.Message.Body.ToArray()));
+                            _ = await _mediator.Send(new FacturaVehiculoFromMessage(facturaVehiculoRequest.Placa,
+                                facturaVehiculoRequest.Tipo, facturaVehiculoRequest.Cilindraje, facturaVehiculoRequest.Valor));
                             await args.CompleteMessageAsync(args.Message);
                         }
                     }

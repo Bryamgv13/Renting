@@ -7,7 +7,7 @@ namespace Renting.Application
     {
         public MappingProfile()
         {
-            CreateMap<IngresoVehiculoFromMessage, Domain.Entities.Parqueadero>();
+            CreateMap<IngresoVehiculoCommand, Domain.Entities.Vehiculo>();
         }
     }
 }

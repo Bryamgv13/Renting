@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Renting.Api.Extensions;
 using Renting.Api.Filters;
+using Renting.Api.Hub;
 using Renting.Application.Ports;
 using Renting.Infrastructure.Adapters;
 using Renting.Infrastructure.Extensions;
@@ -46,8 +47,12 @@ namespace Renting.Api
                 opt.UseInMemoryDatabase("database");
             });
 
+            services.AddSignalR();
+
             services.AddServiceBusSupport(Configuration);
+            services.AddStorageSupport(Configuration);
             services.AddTransient<IBusMessaging, MessagingAdapter>();
+            services.AddTransient<IAlmacenamiento, AzureStorage>();
 
             services.AddControllers(mvcOpts =>
             {
@@ -80,6 +85,7 @@ namespace Renting.Api
             {
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
+                endpoints.MapHub<RentingHub>("/Hub");
             });
 
             app.UseOpenApi();

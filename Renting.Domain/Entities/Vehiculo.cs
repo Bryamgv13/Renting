@@ -9,7 +9,8 @@ namespace Renting.Domain.Entities
         public TipoVehiculo Tipo { get; set; }
         public int Cilindraje { get; set; }
         public DateTime Ingreso { get; set; }
-        public DateTime? Salida { get; set; }
+        public DateTime Salida { get; set; }
+        public double Valor { get; set; }
 
         public Parqueadero Parqueadero { get; set; }
         public Guid ParqueaderoId { get; set; }

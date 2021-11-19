@@ -11,11 +11,12 @@ namespace Renting.Domain.Services
         private readonly int VALOR_CARRO_DIA = 8000;
         private readonly int VALOR_MOTO_HORA = 500;
         private readonly int VALOR_MOTO_DIA = 4000;
-        private readonly int RECARGO_MOTO = 2000;
+        private readonly int VALOR_RECARGO_MOTO = 2000;
+        private readonly int CILINDRAJE_RECARGO_MOTO = 500;
 
         public ServicioCalcularValorAPagar() { }
 
-        public double CalcularValor(Parqueadero vehiculo)
+        public double CalcularValor(Vehiculo vehiculo)
         {
             if (vehiculo.Tipo.Equals(TipoVehiculo.Carro))
             {
@@ -26,7 +27,7 @@ namespace Renting.Domain.Services
             }
         }
 
-        private double CalcularValorCarro(Parqueadero vehiculo)
+        private double CalcularValorCarro(Vehiculo vehiculo)
         {
             var diferencia = (DateTime.Now - vehiculo.Ingreso);
             double tiempoEnMinutos = diferencia.TotalMinutes;
@@ -36,14 +37,26 @@ namespace Renting.Domain.Services
             }
             int dias = diferencia.Days;
             int horas = diferencia.Hours;
-            int minutos = diferencia.Minutes;
             var total = (dias * VALOR_CARRO_DIA) + (horas * VALOR_CARRO_HORA);
-            return 0;
+            return total;
         }
 
-        private double CalcularValorMoto(Parqueadero vehiculo)
+        private double CalcularValorMoto(Vehiculo vehiculo)
         {
-            return 0;
+            var diferencia = (DateTime.Now - vehiculo.Ingreso);
+            double tiempoEnMinutos = diferencia.TotalMinutes;
+            if (tiempoEnMinutos <= 60)
+            {
+                return VALOR_MOTO_HORA;
+            }
+            int dias = diferencia.Days;
+            int horas = diferencia.Hours;
+            var total = (dias * VALOR_MOTO_DIA) + (horas * VALOR_MOTO_HORA);
+            if (vehiculo.Cilindraje > CILINDRAJE_RECARGO_MOTO)
+            {
+                total += VALOR_RECARGO_MOTO;
+            }
+            return total;
         }
     }
 }

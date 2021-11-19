@@ -134,7 +134,7 @@ namespace Renting.Infrastructure.Adapters
                         entry.Property("CreatedOn").CurrentValue = DateTime.UtcNow;
                         break;
                     case EntityState.Modified:
-                        entry.Property("UpdatedOn").CurrentValue = DateTime.UtcNow;
+                        entry.Property("LastModifiedOn").CurrentValue = DateTime.UtcNow;
                         break;
                     default:
                         throw new InvalidOperationException("Unexpected value state = " + entry.State);

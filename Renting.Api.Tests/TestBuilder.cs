@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Client;
-using Renting.Domain.Entities;
-using Renting.Domain.Ports;
 using Renting.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -42,34 +39,9 @@ namespace Api.Test
                             options.UseInMemoryDatabase("TestDb");
                         });
 
-                        var brokerConn = services.Where(d => d.ServiceType == typeof(IConnection)).ToList();
+                        //var brokerConn = services.Where(d => d.ServiceType == typeof(IConnection)).ToList();
 
-                        if (brokerConn != null)
-                        {
-                            foreach (var conn in brokerConn)
-                            {
-                                services.Remove(conn);
-                            }
-
-                        }
-
-                        services.AddSingleton<IConnection>(c =>
-                        {
-                            var factory = new ConnectionFactory
-                            {
-                                HostName = "turkey.rmq.cloudamqp.com",
-                                UserName = "lzxcpjtp",
-                                Password = "OO6voKcyrlTCIZabftP33aKZqKVBT2Vz",
-                                Port = 5672,
-                                VirtualHost = "lzxcpjtp",
-                                AutomaticRecoveryEnabled = true
-                            };
-
-
-                            return factory.CreateConnection("Q_WRITE");
-
-
-                        });
+                                               
                     });
 
 

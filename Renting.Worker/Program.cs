@@ -72,11 +72,12 @@ namespace Renting.Worker
                     services.AddSingleton(c => JsonConfig);
                     services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
                     services.AddTransient<IBusMessaging, MessagingAdapter>();
+                    services.AddTransient<IAlmacenamiento, AzureStorage>();
                     services.AddTransient<ServicioValidaPicoYPlacaVehiculo>();
                     services.AddTransient<ServicioCalcularValorAPagar>();
-                    services.AddTransient<ServicioValidarEspacioParqueadero>();
                     services.AddHostedService<Worker>();
                     services.AddServiceBusSupport(JsonConfig);
+                    services.AddStorageSupport(JsonConfig);
                     Log.Logger = new LoggerConfiguration()
                         .MinimumLevel.Information()
                         .ReadFrom.Configuration(hostContext.Configuration)

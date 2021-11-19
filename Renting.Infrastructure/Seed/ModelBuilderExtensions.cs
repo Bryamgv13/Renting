@@ -19,6 +19,13 @@ namespace Renting.Infrastructure.Seed
                     );
                     context.SaveChanges();
                 }
+                if (!context.Set<Parqueadero>().Any())
+                {
+                    context.Set<Parqueadero>().AddRange(
+                        ParqueaderoSeed.ObtenerParqueaderoSeeds()
+                    );
+                    context.SaveChanges();
+                }
             }
         }
     }

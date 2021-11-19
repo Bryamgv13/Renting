@@ -1,22 +1,21 @@
 ﻿using MediatR;
 using Renting.Domain.Enum;
-using System.ComponentModel.DataAnnotations;
 
 namespace Renting.Application.Parqueadero
 {
-    public class IngresoVehiculoFromMessage : IRequest
+    public class FacturaVehiculoFromMessage : IRequest
     {
-        public IngresoVehiculoFromMessage(string placa, TipoVehiculo tipo, int cilindraje)
+        public FacturaVehiculoFromMessage(string placa, TipoVehiculo tipo, int cilindraje, double valor)
         {
             Placa = placa;
             Tipo = tipo;
             Cilindraje = cilindraje;
+            Valor = valor;
         }
 
-        [Required]
         public string Placa { get; set; }
-        [Required]
         public TipoVehiculo Tipo { get; set; }
         public int Cilindraje { get; set; }
+        public double Valor { get; set; }
     }
 }

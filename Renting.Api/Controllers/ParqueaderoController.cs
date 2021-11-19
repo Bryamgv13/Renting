@@ -23,9 +23,9 @@ namespace Renting.Api.Controllers
         }
 
         [HttpPost("Salida")]
-        public async Task SalidaVehiculo(SalidaVehiculoCommand vehiculo)
+        public async Task<InformacionSalidaDto> SalidaVehiculo(SalidaVehiculoCommand vehiculo)
         {
-            await _Mediator.Send(vehiculo);
+            return await _Mediator.Send(vehiculo);
         }
     }
 }
