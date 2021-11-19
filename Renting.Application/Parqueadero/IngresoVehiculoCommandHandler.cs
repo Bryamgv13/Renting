@@ -32,7 +32,7 @@ namespace Renting.Application.Parqueadero
         protected override async Task Handle(IngresoVehiculoCommand request, CancellationToken cancellationToken)
         {
             _ = request ?? throw new ArgumentNullException("request", "request object needed to handle this task");
-            await ServicioValidaPicoYPlacaVehiculo.ValidarIngresoVehiculoAsync(request.Placa, request.Tipo);
+            ServicioValidaPicoYPlacaVehiculo.ValidarIngresoVehiculoAsync(request.Placa, request.Tipo);
             Domain.Entities.Parqueadero parqueadero = (await RepositorioParqueadero.GetAsync(includeStringProperties: "Vehiculos")).FirstOrDefault();
             if (parqueadero.EstaLleno(request.Tipo))
             {

@@ -37,6 +37,10 @@ namespace Renting.Domain.Services
             }
             int dias = diferencia.Days;
             int horas = diferencia.Hours;
+            if (dias == 0 && horas > 9)
+            {
+                return VALOR_CARRO_DIA;
+            }
             var total = (dias * VALOR_CARRO_DIA) + (horas * VALOR_CARRO_HORA);
             return total;
         }
@@ -51,7 +55,15 @@ namespace Renting.Domain.Services
             }
             int dias = diferencia.Days;
             int horas = diferencia.Hours;
-            var total = (dias * VALOR_MOTO_DIA) + (horas * VALOR_MOTO_HORA);
+            double total;
+            if (dias == 0 && horas > 9)
+            {
+                total = VALOR_MOTO_DIA;
+            }
+            else
+            {
+                total = (dias * VALOR_MOTO_DIA) + (horas * VALOR_MOTO_HORA);
+            }            
             if (vehiculo.Cilindraje > CILINDRAJE_RECARGO_MOTO)
             {
                 total += VALOR_RECARGO_MOTO;

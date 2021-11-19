@@ -1,9 +1,8 @@
 ﻿using Renting.Domain.Enum;
-using System;
 
 namespace Renting.Domain.Entities
 {
-    public class PicoYPlaca : EntityBase<Guid>
+    public class PicoYPlaca
     {
         public int Dia { get; set; }
         public TipoVehiculo Tipo { get; set; }

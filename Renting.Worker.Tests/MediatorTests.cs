@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Renting.Application.Parqueadero;
 using Renting.Application.Ports;
 using Renting.Domain.Ports;
+using Renting.Domain.Services;
 using Renting.Infrastructure;
 using Renting.Infrastructure.Adapters;
+using Renting.Infrastructure.Extensions;
 using Serilog;
 using System.IO;
 using System.Linq;
@@ -18,7 +21,6 @@ namespace Worker.Test
     [TestClass]
     public class MediatorTests
     {
-
         IServiceCollection _services;
 
         [TestInitialize]
@@ -41,9 +43,12 @@ namespace Worker.Test
 
             _services.AddSingleton<IConfiguration>(c => JsonConfig);
             _services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            //_services.AddTransient<IPersonService, PersonService>();
             _services.AddTransient<IBusMessaging, MessagingAdapter>();
-            //_services.AddRabbitSupport(JsonConfig);
+            _services.AddTransient<IAlmacenamiento, AzureStorage>();
+            _services.AddTransient<ServicioValidaPicoYPlacaVehiculo>();
+            _services.AddTransient<ServicioCalcularValorAPagar>();
+            _services.AddServiceBusSupport(JsonConfig);
+            _services.AddStorageSupport(JsonConfig);
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .CreateLogger();
@@ -51,17 +56,16 @@ namespace Worker.Test
 
 
         [TestMethod]
-        public void TestMethod1()
+        public void FacturaVehiculo()
         {
+            var newPerson = new FacturaVehiculoFromMessage("AAA571", Renting.Domain.Enum.TipoVehiculo.Carro, 1500, 8000);
 
-            //var newPerson = new CreatePersonFromMessage("john", "doe", "john@doe.com");
-
-            //using (var scope = _services.BuildServiceProvider().CreateScope())
-            //{
-            //    var mediator = scope.ServiceProvider.GetService<IMediator>();
-            //    var result = mediator.Send(newPerson).Result;
-            //    Assert.IsInstanceOfType(result, typeof(Unit));
-            //}
+            using (var scope = _services.BuildServiceProvider().CreateScope())
+            {
+                var mediator = scope.ServiceProvider.GetService<IMediator>();
+                var result = mediator.Send(newPerson).Result;
+                Assert.IsInstanceOfType(result, typeof(Unit));
+            }
         }
     }
 }

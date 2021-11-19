@@ -16,7 +16,11 @@ namespace Renting.Infrastructure.Adapters
 
         public async Task SubirArchivoBlobAsync(string nombreArchivo, Stream contenido)
         {
-            await BlobContainerClient.UploadBlobAsync(nombreArchivo, contenido);
+            var cli = BlobContainerClient.GetBlobClient(nombreArchivo);
+            if (!await cli.ExistsAsync())
+            {
+                await BlobContainerClient.UploadBlobAsync(nombreArchivo, contenido);
+            }            
         }
     }
 }

@@ -8,6 +8,7 @@
     <None Remove="Adapters\qkuejzh2.a0b~" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Data.Tables" Version="12.3.0" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.5.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />

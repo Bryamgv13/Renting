@@ -1,4 +1,5 @@
 using AutoMapper;
+using Azure.Data.Tables;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Renting.Api.Extensions;
 using Renting.Api.Filters;
 using Renting.Api.Hub;
 using Renting.Application.Ports;
+using Renting.Domain.Ports;
 using Renting.Infrastructure.Adapters;
 using Renting.Infrastructure.Extensions;
 using Renting.Infrastructure.Seed;
@@ -53,6 +55,7 @@ namespace Renting.Api
             services.AddStorageSupport(Configuration);
             services.AddTransient<IBusMessaging, MessagingAdapter>();
             services.AddTransient<IAlmacenamiento, AzureStorage>();
+            services.AddTransient<IRepositorioTable, RepositorioTable>();
 
             services.AddControllers(mvcOpts =>
             {
@@ -66,6 +69,8 @@ namespace Renting.Api
             services.LoadAppStoreRepositories();
             services.AddSwaggerDocument();
 
+            services.AddSingleton<TableClient>(new TableClient(Environment.GetEnvironmentVariable("STORAGE_CONNSTRING") ?? Configuration.GetValue<string>("STORAGE:CONNSTRING"), "PicoYPlaca"));
+            
         }
 
 
@@ -78,6 +83,7 @@ namespace Renting.Api
 
             app.UseHttpsRedirection();
             app.SeedDataBase();
+            app.SeedTableStorage();
             app.UseRouting();
             app.UseAuthorization();
 

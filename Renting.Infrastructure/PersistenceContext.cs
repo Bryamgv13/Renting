@@ -29,8 +29,8 @@ namespace Renting.Infrastructure
             }
 
             modelBuilder.HasDefaultSchema(Config.GetValue<string>("SchemaName"));
-            modelBuilder.Entity<PicoYPlaca>();
             modelBuilder.Entity<Parqueadero>();
+            modelBuilder.Entity<Vehiculo>();
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {

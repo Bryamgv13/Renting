@@ -4,24 +4,23 @@ using Renting.Domain.Enum;
 using Renting.Domain.Ports;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Renting.Domain.Services
 {
     [DomainService]
     public class ServicioValidaPicoYPlacaVehiculo
     {
-        private readonly IGenericRepository<PicoYPlaca> RepositorioPicoYPlaca;
+        private readonly IRepositorioTable RepositorioPicoYPlaca;
 
-        public ServicioValidaPicoYPlacaVehiculo(IGenericRepository<PicoYPlaca> repositorioPicoYPlaca)
+        public ServicioValidaPicoYPlacaVehiculo(IRepositorioTable repositorioPicoYPlaca)
         {
             RepositorioPicoYPlaca = repositorioPicoYPlaca;
         }
 
-        public async Task ValidarIngresoVehiculoAsync(string placa, TipoVehiculo tipo)
+        public void ValidarIngresoVehiculoAsync(string placa, TipoVehiculo tipo)
         {
-            var picoYPlacas = await RepositorioPicoYPlaca.GetAsync(picoYPlaca => picoYPlaca.Dia.Equals(((int)DateTime.Now.DayOfWeek))
-                                    && picoYPlaca.Tipo.Equals(tipo));
+            var picoYPlacas = RepositorioPicoYPlaca.ObtenerPicoYPlacaPorDiaYTipo((int)DateTime.Now.DayOfWeek, (int)tipo);
+                
             if (picoYPlacas.Any())
             {
                 PicoYPlaca picoYPlaca = picoYPlacas.FirstOrDefault();

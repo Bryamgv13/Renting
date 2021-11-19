@@ -2,6 +2,7 @@
 using Renting.Domain.Entities;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
+using Renting.Domain.Ports;
 
 namespace Renting.Infrastructure.Seed
 {
@@ -12,19 +13,25 @@ namespace Renting.Infrastructure.Seed
             using (var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<PersistenceContext>();
-                if (!context.Set<PicoYPlaca>().Any())
-                {
-                    context.Set<PicoYPlaca>().AddRange(
-                        PicoYPlacaSeed.ObtenerPicoYPlacaSeeds()
-                    );
-                    context.SaveChanges();
-                }
                 if (!context.Set<Parqueadero>().Any())
                 {
                     context.Set<Parqueadero>().AddRange(
                         ParqueaderoSeed.ObtenerParqueaderoSeeds()
                     );
                     context.SaveChanges();
+                }
+            }
+        }
+
+        public static void SeedTableStorage(this IApplicationBuilder applicationBuilder)
+        {
+            using (var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var repositorioTable = serviceScope.ServiceProvider.GetService<IRepositorioTable>();
+                var picoYPlacas = PicoYPlacaSeed.ObtenerPicoYPlacaSeeds();
+                foreach(var picoYPlaca in picoYPlacas)
+                {
+                    repositorioTable.UpsertPicoYPlaca(picoYPlaca);
                 }
             }
         }
