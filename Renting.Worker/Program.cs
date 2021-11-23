@@ -1,8 +1,10 @@
 using AutoMapper;
+using Azure.Data.Tables;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,7 @@ using Renting.Infrastructure;
 using Renting.Infrastructure.Adapters;
 using Renting.Infrastructure.Extensions;
 using Serilog;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -69,10 +72,24 @@ namespace Renting.Worker
                     services.AddHealthChecks()
                         .AddDbContextCheck<PersistenceContext>();
 
+                    services.AddSingleton<TableClient>(new TableClient(Environment.GetEnvironmentVariable("STORAGE_CONNSTRING") ?? JsonConfig.GetValue<string>("STORAGE:CONNSTRING"), "PicoYPlaca"));
+
+                    string urlSignalR = Environment.GetEnvironmentVariable("URL_SIGNALR_HUB") ?? JsonConfig.GetValue<string>("HUB:Url");
+                    HubConnection hub = new HubConnectionBuilder()
+                                            .WithUrl(urlSignalR, options =>
+                                            {
+                                                options.SkipNegotiation = true;
+                                                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+                                            })
+                                            .Build();
+                    services.AddScoped<HubConnection>(c => hub);
+
                     services.AddSingleton(c => JsonConfig);
                     services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
                     services.AddTransient<IBusMessaging, MessagingAdapter>();
                     services.AddTransient<IAlmacenamiento, AzureStorage>();
+                    services.AddTransient<IRepositorioHub, RepositorioHub>();
+                    services.AddTransient<IRepositorioTable, RepositorioTable>();
                     services.AddTransient<ServicioValidaPicoYPlacaVehiculo>();
                     services.AddTransient<ServicioCalcularValorAPagar>();
                     services.AddHostedService<Worker>();

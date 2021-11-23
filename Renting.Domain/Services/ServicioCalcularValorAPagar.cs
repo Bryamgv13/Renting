@@ -47,23 +47,27 @@ namespace Renting.Domain.Services
 
         private double CalcularValorMoto(Vehiculo vehiculo)
         {
+            double total;
+
             var diferencia = (DateTime.Now - vehiculo.Ingreso);
             double tiempoEnMinutos = diferencia.TotalMinutes;
             if (tiempoEnMinutos <= 60)
             {
-                return VALOR_MOTO_HORA;
-            }
-            int dias = diferencia.Days;
-            int horas = diferencia.Hours;
-            double total;
-            if (dias == 0 && horas > 9)
-            {
-                total = VALOR_MOTO_DIA;
+                total = VALOR_MOTO_HORA;
             }
             else
             {
-                total = (dias * VALOR_MOTO_DIA) + (horas * VALOR_MOTO_HORA);
-            }            
+                int dias = diferencia.Days;
+                int horas = diferencia.Hours;
+                if (dias == 0 && horas > 9)
+                {
+                    total = VALOR_MOTO_DIA;
+                }
+                else
+                {
+                    total = (dias * VALOR_MOTO_DIA) + (horas * VALOR_MOTO_HORA);
+                }
+            }                       
             if (vehiculo.Cilindraje > CILINDRAJE_RECARGO_MOTO)
             {
                 total += VALOR_RECARGO_MOTO;

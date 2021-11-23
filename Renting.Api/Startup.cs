@@ -3,6 +3,7 @@ using Azure.Data.Tables;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,11 +52,22 @@ namespace Renting.Api
 
             services.AddSignalR();
 
+            string urlSignalR = Environment.GetEnvironmentVariable("URL_SIGNALR_HUB") ?? Configuration.GetValue<string>("HUB:Url");
+            HubConnection hub = new HubConnectionBuilder()
+                                    .WithUrl(urlSignalR, options =>
+                                    {
+                                        options.SkipNegotiation = true;
+                                        options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+                                    })
+                                    .Build();
+            services.AddScoped<HubConnection>(c => hub);
+
             services.AddServiceBusSupport(Configuration);
             services.AddStorageSupport(Configuration);
             services.AddTransient<IBusMessaging, MessagingAdapter>();
             services.AddTransient<IAlmacenamiento, AzureStorage>();
             services.AddTransient<IRepositorioTable, RepositorioTable>();
+            services.AddTransient<IRepositorioHub, RepositorioHub>();
 
             services.AddControllers(mvcOpts =>
             {
@@ -70,7 +82,13 @@ namespace Renting.Api
             services.AddSwaggerDocument();
 
             services.AddSingleton<TableClient>(new TableClient(Environment.GetEnvironmentVariable("STORAGE_CONNSTRING") ?? Configuration.GetValue<string>("STORAGE:CONNSTRING"), "PicoYPlaca"));
-            
+
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder => {
+                builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowAnyOrigin();
+            }));
         }
 
 
@@ -86,6 +104,7 @@ namespace Renting.Api
             app.SeedTableStorage();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

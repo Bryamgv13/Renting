@@ -27,7 +27,7 @@ namespace Renting.Application.Parqueadero
         public async Task<InformacionSalidaDto> Handle(SalidaVehiculoCommand request, CancellationToken cancellationToken)
         {
             _ = request ?? throw new ArgumentNullException("request", "request object needed to handle this task");
-            var vehiculo = (await RepositorioVehiculo.GetAsync(vehiculo => vehiculo.Placa.Equals(request.Placa))).FirstOrDefault();
+            var vehiculo = (await RepositorioVehiculo.GetAsync(vehiculo => vehiculo.Placa.Equals(request.Placa) && vehiculo.Valor == 0)).FirstOrDefault();
             var valor = ServicioCalcularValorAPagar.CalcularValor(vehiculo);
             vehiculo.Salida = DateTime.Now;
             vehiculo.Valor = valor;

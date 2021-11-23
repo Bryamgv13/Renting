@@ -5,9 +5,9 @@ namespace Renting.Api.Hub
 {
     public class RentingHub : Microsoft.AspNetCore.SignalR.Hub
     {
-        public async Task EnviarRespuestaFacturaCreada(string idConexion, object respuesta)
+        public async Task EnviarRespuestaFacturaCreada(object respuesta)
         {
-            await Clients.Client(idConexion).SendAsync("RespuestaFacturaCreada", respuesta);
+            await Clients.All.SendAsync("RespuestaFacturaCreada", respuesta);
         }
     }
 }
