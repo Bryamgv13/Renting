@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
 using Renting.Domain.Entities;
+using Renting.Domain.Ports;
 using Renting.Domain.Services;
 
 namespace Renting.Domain.Tests
@@ -8,11 +10,13 @@ namespace Renting.Domain.Tests
     public class ServicioCalcularValorAPagarTest
     {
         ServicioCalcularValorAPagar ServicioCalcularValorAPagar;
+        IProveedorConstantes ProveedorConstantes;
 
         [TestInitialize]
         public void Initialize()
         {
-            ServicioCalcularValorAPagar = new ServicioCalcularValorAPagar();
+            ProveedorConstantes = Substitute.For<IProveedorConstantes>();
+            ServicioCalcularValorAPagar = new ServicioCalcularValorAPagar(ProveedorConstantes);
         }
 
         [TestMethod]
@@ -23,6 +27,8 @@ namespace Renting.Domain.Tests
                 Tipo = Enum.TipoVehiculo.Carro,
                 Ingreso = System.DateTime.Now.AddDays(-1).AddHours(-3)
             };
+            ProveedorConstantes.ValorCarroDia.Returns(8000);
+            ProveedorConstantes.ValorCarroHora.Returns(1000);
 
             var resultado = ServicioCalcularValorAPagar.CalcularValor(vehiculo);
 
@@ -38,6 +44,10 @@ namespace Renting.Domain.Tests
                 Cilindraje = 650,
                 Ingreso = System.DateTime.Now.AddHours(-10)
             };
+            ProveedorConstantes.ValorMotoDia.Returns(4000);
+            ProveedorConstantes.ValorMotoHora.Returns(500);
+            ProveedorConstantes.ValorRecargoMoto.Returns(2000);
+            ProveedorConstantes.CilindrajeRecargoMoto.Returns(500);
 
             var resultado = ServicioCalcularValorAPagar.CalcularValor(vehiculo);
 

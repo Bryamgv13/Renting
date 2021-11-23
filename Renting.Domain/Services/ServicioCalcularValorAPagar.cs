@@ -1,5 +1,6 @@
 ﻿using Renting.Domain.Entities;
 using Renting.Domain.Enum;
+using Renting.Domain.Ports;
 using System;
 
 namespace Renting.Domain.Services
@@ -7,21 +8,20 @@ namespace Renting.Domain.Services
     [DomainService]
     public class ServicioCalcularValorAPagar
     {
-        private readonly int VALOR_CARRO_HORA = 1000;
-        private readonly int VALOR_CARRO_DIA = 8000;
-        private readonly int VALOR_MOTO_HORA = 500;
-        private readonly int VALOR_MOTO_DIA = 4000;
-        private readonly int VALOR_RECARGO_MOTO = 2000;
-        private readonly int CILINDRAJE_RECARGO_MOTO = 500;
+        private readonly IProveedorConstantes ProveedorConstantes;
 
-        public ServicioCalcularValorAPagar() { }
+        public ServicioCalcularValorAPagar(IProveedorConstantes proveedorConstantes)
+        {
+            ProveedorConstantes = proveedorConstantes;
+        }
 
         public double CalcularValor(Vehiculo vehiculo)
         {
             if (vehiculo.Tipo.Equals(TipoVehiculo.Carro))
             {
                 return CalcularValorCarro(vehiculo);
-            } else
+            }
+            else
             {
                 return CalcularValorMoto(vehiculo);
             }
@@ -33,15 +33,15 @@ namespace Renting.Domain.Services
             double tiempoEnMinutos = diferencia.TotalMinutes;
             if (tiempoEnMinutos <= 60)
             {
-                return VALOR_CARRO_HORA;
+                return ProveedorConstantes.ValorCarroHora;
             }
             int dias = diferencia.Days;
             int horas = diferencia.Hours;
             if (dias == 0 && horas > 9)
             {
-                return VALOR_CARRO_DIA;
+                return ProveedorConstantes.ValorCarroDia;
             }
-            var total = (dias * VALOR_CARRO_DIA) + (horas * VALOR_CARRO_HORA);
+            var total = (dias * ProveedorConstantes.ValorCarroDia) + (horas * ProveedorConstantes.ValorCarroHora);
             return total;
         }
 
@@ -53,7 +53,7 @@ namespace Renting.Domain.Services
             double tiempoEnMinutos = diferencia.TotalMinutes;
             if (tiempoEnMinutos <= 60)
             {
-                total = VALOR_MOTO_HORA;
+                total = ProveedorConstantes.ValorMotoHora;
             }
             else
             {
@@ -61,16 +61,16 @@ namespace Renting.Domain.Services
                 int horas = diferencia.Hours;
                 if (dias == 0 && horas > 9)
                 {
-                    total = VALOR_MOTO_DIA;
+                    total = ProveedorConstantes.ValorMotoDia;
                 }
                 else
                 {
-                    total = (dias * VALOR_MOTO_DIA) + (horas * VALOR_MOTO_HORA);
+                    total = (dias * ProveedorConstantes.ValorMotoDia) + (horas * ProveedorConstantes.ValorMotoHora);
                 }
-            }                       
-            if (vehiculo.Cilindraje > CILINDRAJE_RECARGO_MOTO)
+            }
+            if (vehiculo.Cilindraje > ProveedorConstantes.CilindrajeRecargoMoto)
             {
-                total += VALOR_RECARGO_MOTO;
+                total += ProveedorConstantes.ValorRecargoMoto;
             }
             return total;
         }

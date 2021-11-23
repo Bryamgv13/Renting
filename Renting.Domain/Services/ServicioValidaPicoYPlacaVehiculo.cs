@@ -11,10 +11,13 @@ namespace Renting.Domain.Services
     public class ServicioValidaPicoYPlacaVehiculo
     {
         private readonly IRepositorioTable RepositorioPicoYPlaca;
+        private readonly IProveedorMensajes ProveedorMensajes;
 
-        public ServicioValidaPicoYPlacaVehiculo(IRepositorioTable repositorioPicoYPlaca)
+        public ServicioValidaPicoYPlacaVehiculo(IRepositorioTable repositorioPicoYPlaca,
+            IProveedorMensajes proveedorMensajes)
         {
             RepositorioPicoYPlaca = repositorioPicoYPlaca;
+            ProveedorMensajes = proveedorMensajes;
         }
 
         public void ValidarIngresoVehiculoAsync(string placa, TipoVehiculo tipo)
@@ -26,7 +29,7 @@ namespace Renting.Domain.Services
                 PicoYPlaca picoYPlaca = picoYPlacas.FirstOrDefault();
                 if (picoYPlaca.ObtenerPlacas().Contains(ExtraerDigitoPlaca(placa, tipo)))
                 {
-                    throw new VehiculoEnPicoYPlacaException("El vehiculo se encuentra en pico y placa");
+                    throw new VehiculoEnPicoYPlacaException(ProveedorMensajes.PicoYPlaca);
                 }
             }            
         }

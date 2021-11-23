@@ -15,6 +15,7 @@ using Renting.Application.Ports;
 using Renting.Domain.Ports;
 using Renting.Infrastructure.Adapters;
 using Renting.Infrastructure.Extensions;
+using Renting.Infrastructure.Recursos;
 using Renting.Infrastructure.Seed;
 using System;
 using System.Diagnostics;
@@ -68,6 +69,8 @@ namespace Renting.Api
             services.AddTransient<IAlmacenamiento, AzureStorage>();
             services.AddTransient<IRepositorioTable, RepositorioTable>();
             services.AddTransient<IRepositorioHub, RepositorioHub>();
+            services.AddTransient<IProveedorConstantes, ProveedorConstantes>();
+            services.AddTransient<IProveedorMensajes, ProveedorMensajes>();
 
             services.AddControllers(mvcOpts =>
             {

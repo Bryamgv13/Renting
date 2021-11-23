@@ -30,6 +30,11 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Recursos\Constantes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Constantes.resx</DependentUpon>
+    </Compile>
     <Compile Update="Recursos\Mensajes.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -37,6 +42,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Recursos\Constantes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Constantes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Recursos\Mensajes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Mensajes.Designer.cs</LastGenOutput>

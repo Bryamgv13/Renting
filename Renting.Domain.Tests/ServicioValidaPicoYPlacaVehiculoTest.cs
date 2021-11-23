@@ -5,7 +5,6 @@ using Renting.Domain.Entities;
 using Renting.Domain.Ports;
 using Renting.Domain.Services;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Renting.Domain.Tests
 {
@@ -14,12 +13,14 @@ namespace Renting.Domain.Tests
     {
         ServicioValidaPicoYPlacaVehiculo ServicioValidaPicoYPlacaVehiculo;
         IRepositorioTable RepositorioPicoYPlaca;
+        IProveedorMensajes ProveedorMensajes;
 
         [TestInitialize]
         public void Initialize()
         {
             RepositorioPicoYPlaca = Substitute.For<IRepositorioTable>();
-            ServicioValidaPicoYPlacaVehiculo = new ServicioValidaPicoYPlacaVehiculo(RepositorioPicoYPlaca);
+            ProveedorMensajes = Substitute.For<IProveedorMensajes>();
+            ServicioValidaPicoYPlacaVehiculo = new ServicioValidaPicoYPlacaVehiculo(RepositorioPicoYPlaca, ProveedorMensajes);
         }
 
         [TestMethod]

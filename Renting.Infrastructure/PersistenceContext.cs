@@ -29,7 +29,7 @@ namespace Renting.Infrastructure
             }
 
             modelBuilder.HasDefaultSchema(Config.GetValue<string>("SchemaName"));
-            modelBuilder.Entity<Parqueadero>();
+            modelBuilder.Entity<Parqueadero>().HasKey(key => key.Id);
             modelBuilder.Entity<Vehiculo>();
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

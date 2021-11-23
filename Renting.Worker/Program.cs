@@ -15,6 +15,7 @@ using Renting.Domain.Services;
 using Renting.Infrastructure;
 using Renting.Infrastructure.Adapters;
 using Renting.Infrastructure.Extensions;
+using Renting.Infrastructure.Recursos;
 using Serilog;
 using System;
 using System.IO;
@@ -90,6 +91,8 @@ namespace Renting.Worker
                     services.AddTransient<IAlmacenamiento, AzureStorage>();
                     services.AddTransient<IRepositorioHub, RepositorioHub>();
                     services.AddTransient<IRepositorioTable, RepositorioTable>();
+                    services.AddTransient<IProveedorConstantes, ProveedorConstantes>();
+                    services.AddTransient<IProveedorMensajes, ProveedorMensajes>();
                     services.AddTransient<ServicioValidaPicoYPlacaVehiculo>();
                     services.AddTransient<ServicioCalcularValorAPagar>();
                     services.AddHostedService<Worker>();

@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ using Renting.Domain.Services;
 using Renting.Infrastructure;
 using Renting.Infrastructure.Adapters;
 using Renting.Infrastructure.Extensions;
+using Renting.Worker.Tests;
 using Serilog;
 using System.IO;
 using System.Linq;
@@ -41,10 +43,17 @@ namespace Worker.Test
                 options.UseInMemoryDatabase("TestDb");
             });
 
+            HubConnection hub = new HubConnectionBuilder()
+                                    .WithUrl(JsonConfig.GetValue<string>("HUB:Url"))
+                                    .Build();
+            _services.AddScoped<HubConnection>(c => hub);
+
             _services.AddSingleton<IConfiguration>(c => JsonConfig);
             _services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             _services.AddTransient<IBusMessaging, MessagingAdapter>();
             _services.AddTransient<IAlmacenamiento, AzureStorage>();
+            _services.AddTransient<IRepositorioHub, RepositorioHubTest>();
+            _services.AddTransient<IRepositorioTable, RepositorioTable>();
             _services.AddTransient<ServicioValidaPicoYPlacaVehiculo>();
             _services.AddTransient<ServicioCalcularValorAPagar>();
             _services.AddServiceBusSupport(JsonConfig);
